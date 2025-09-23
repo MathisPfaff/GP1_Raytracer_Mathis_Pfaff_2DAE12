@@ -29,12 +29,14 @@ void Renderer::Render(Scene* pScene) const
 
 	Vector3 rayDirection{0,0,1};
 
+	float aspectRatio{ m_Width / float(m_Height) };
+
 	for (int px{}; px < m_Width; ++px)
 	{
 		for (int py{}; py < m_Height; ++py)
 		{
 			//NDC
-			rayDirection.x = (2 * ((float(px) + 0.5) / m_Width)) - 1;
+			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1);
 			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
 			
 			//NSS
@@ -46,10 +48,6 @@ void Renderer::Render(Scene* pScene) const
 			
 			Ray hitray{ {0, 0, 0}, rayDirection};
 			ColorRGB finalColor{ rayDirection.x, rayDirection.y, rayDirection.z };
-			
-			
-			
-			
 			
 			
 			//float gradient = px / static_cast<float>(m_Width);
