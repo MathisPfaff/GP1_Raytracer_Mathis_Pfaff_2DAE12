@@ -23,6 +23,9 @@ namespace dae
 			else
 			{
 				hitRecord.didHit = true;
+				hitRecord.t = Vector3::Dot(vectorL, ray.direction) - sqrt(dae::Square(sphere.radius) - od2);
+				hitRecord.origin = ray.origin + ray.direction * hitRecord.t;
+				hitRecord.normal = (hitRecord.origin - sphere.origin).Normalized();
 			}
 
 			return false;

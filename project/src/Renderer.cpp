@@ -37,8 +37,30 @@ void Renderer::Render(Scene* pScene) const
 	{
 		for (int py{}; py < m_Height; ++py)
 		{
-			//TODO W1: 2
+			//TODO W1: 3
+			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
+			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
+
+			Ray viewRay{ {0,0,0}, rayDirection };
+
+			HitRecord closestHit{};
+
+			Sphere testSphere{ {0,0,100}, 50.f, 0 };
+
+			GeometryUtils::HitTest_Sphere(testSphere, viewRay, closestHit);
+
+			if (closestHit.didHit)
+			{
+				const float scaled_t = (closestHit.t - 50.f) / 40.f;
+				finalColor = { scaled_t, scaled_t, scaled_t };
+			}
+			else
+			{
+				finalColor = { 0,0,0 };
+			}
 			
+			//TODO W1: 2
+			/*
 			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
 			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
 
@@ -58,7 +80,7 @@ void Renderer::Render(Scene* pScene) const
 			{
 				finalColor = { 0,0,0 };
 			}
-			
+			*/
 			
 			//TODO W1: 1
 			/*
