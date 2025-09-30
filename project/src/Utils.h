@@ -43,7 +43,23 @@ namespace dae
 		inline bool HitTest_Plane(const Plane& plane, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
 			//todo W1
-			throw std::runtime_error("Not Implemented Yet");
+			Vector3 Vectorl = plane.origin - ray.origin;
+
+			float t = Vector3::Dot(Vectorl, plane.normal) / Vector3::Dot(ray.direction, plane.normal);
+			
+			if(t < ray.min || t >= ray.max)
+			{
+				hitRecord.didHit = false;
+			}
+			else
+			{
+				hitRecord.didHit = true;
+				hitRecord.t = t;
+				hitRecord.origin = ray.origin + t * ray.direction;
+				hitRecord.normal = plane.normal;
+				hitRecord.materialIndex = plane.materialIndex;
+			}
+			
 			return false;
 		}
 
