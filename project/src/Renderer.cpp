@@ -29,12 +29,39 @@ void Renderer::Render(Scene* pScene) const
 
 	Vector3 rayDirection{0,0,1};
 
-	float aspectRatio{ m_Width / float(m_Height) };
+	ColorRGB finalColor{};
+
+	float aspectRatio = float(m_Width) / m_Height;
 
 	for (int px{}; px < m_Width; ++px)
 	{
 		for (int py{}; py < m_Height; ++py)
 		{
+			//TODO W1: 2
+			
+			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
+			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
+
+			Ray viewRay{ {0,0,0}, rayDirection };
+			
+			HitRecord closestHit{};
+			
+			Sphere testSphere{ {0,0,100}, 50.f, 0 };
+			
+			GeometryUtils::HitTest_Sphere(testSphere, viewRay, closestHit);
+
+			if(closestHit.didHit)
+			{
+				finalColor = materials[testSphere.materialIndex]->Shade(closestHit);
+			}
+			else
+			{
+				finalColor = { 0,0,0 };
+			}
+			
+			
+			//TODO W1: 1
+			/*
 			//NDC
 			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1);
 			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
@@ -48,14 +75,7 @@ void Renderer::Render(Scene* pScene) const
 			
 			Ray hitray{ {0, 0, 0}, rayDirection};
 			ColorRGB finalColor{ rayDirection.x, rayDirection.y, rayDirection.z };
-			
-			
-			//float gradient = px / static_cast<float>(m_Width);
-			//gradient += py / static_cast<float>(m_Height);
-			//gradient /= 2.0f;
-			//
-			//ColorRGB finalColor{ gradient, gradient, gradient };
-			
+			*/
 			
 			//Update Color in Buffer
 			finalColor.MaxToOne();

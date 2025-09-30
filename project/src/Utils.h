@@ -12,7 +12,19 @@ namespace dae
 		inline bool HitTest_Sphere(const Sphere& sphere, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
 			//todo W1
-			throw std::runtime_error("Not Implemented Yet");
+			Vector3 vectorL = sphere.origin - ray.origin;
+
+			float od2 = dae::Square(Vector3::Reject(vectorL, ray.direction).Magnitude());
+
+			if (od2 > dae::Square(sphere.radius))
+			{
+				hitRecord.didHit = false;
+			}
+			else
+			{
+				hitRecord.didHit = true;
+			}
+
 			return false;
 		}
 
