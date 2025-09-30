@@ -35,8 +35,28 @@ void Renderer::Render(Scene* pScene) const
 	{
 		for (int py{}; py < m_Height; ++py)
 		{
-			//TODO W1: 6
+			//TODO W1: 7
+
+			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
+			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
+
+			ColorRGB finalColor{};
+
+			Ray viewRay{ {0,0,0}, rayDirection };
+
+			HitRecord closestHit{};
+			Plane testPlane{ {0.f,-50.f,0.f}, {0.f,1.f,0.f}, 0 };
+			GeometryUtils::HitTest_Plane(testPlane, viewRay, closestHit);
+
+			if (closestHit.didHit)
+			{
+				const float scaled_t = closestHit.t / 500.f;
+				finalColor = { scaled_t, scaled_t, scaled_t };
+			}
 			
+			
+			//TODO W1: 6
+			/*
 			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
 			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
 
@@ -52,7 +72,7 @@ void Renderer::Render(Scene* pScene) const
 			{
 				finalColor = materials[closestHit.materialIndex]->Shade();
 			}
-
+			*/
 			
 			//TODO W1: 4
 			/*
