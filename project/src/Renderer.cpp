@@ -29,17 +29,37 @@ void Renderer::Render(Scene* pScene) const
 
 	Vector3 rayDirection{0,0,1};
 
-	ColorRGB finalColor{};
-
 	float aspectRatio = float(m_Width) / m_Height;
 
 	for (int px{}; px < m_Width; ++px)
 	{
 		for (int py{}; py < m_Height; ++py)
 		{
-			//TODO W1: 3
+			//TODO W1: 4
+
 			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
 			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
+
+			ColorRGB finalColor{};
+
+			Ray viewRay{ {0,0,0}, rayDirection };
+
+			HitRecord closestHit{};
+			pScene->GetClosestHit(viewRay, closestHit);
+
+			if(closestHit.didHit)
+			{
+				finalColor = materials[closestHit.materialIndex]->Shade();
+			}
+			
+			
+			
+			//TODO W1: 3
+			/*
+			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
+			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
+
+			ColorRGB finalColor{};
 
 			Ray viewRay{ {0,0,0}, rayDirection };
 
@@ -54,10 +74,7 @@ void Renderer::Render(Scene* pScene) const
 				const float scaled_t = (closestHit.t - 50.f) / 40.f;
 				finalColor = { scaled_t, scaled_t, scaled_t };
 			}
-			else
-			{
-				finalColor = { 0,0,0 };
-			}
+			*/
 			
 			//TODO W1: 2
 			/*
