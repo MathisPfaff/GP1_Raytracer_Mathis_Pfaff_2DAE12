@@ -16,17 +16,30 @@ namespace dae
 
 			float od2 = dae::Square(Vector3::Reject(vectorL, ray.direction).Magnitude());
 
+
 			if (od2 > dae::Square(sphere.radius))
 			{
 				hitRecord.didHit = false;
 			}
 			else
 			{
-				hitRecord.didHit = true;
-				hitRecord.t = Vector3::Dot(vectorL, ray.direction) - sqrt(dae::Square(sphere.radius) - od2);
-				hitRecord.origin = ray.origin + ray.direction * hitRecord.t;
-				hitRecord.normal = (hitRecord.origin - sphere.origin).Normalized();
-				hitRecord.materialIndex = sphere.materialIndex;
+				float t = Vector3::Dot(vectorL, ray.direction) - sqrt(dae::Square(sphere.radius) - od2);
+				
+				if (t < ray.min || t >= ray.max)
+				{
+					hitRecord.didHit = false;
+				}
+				else
+				{
+					hitRecord.didHit = true;
+					hitRecord.t = t;
+					hitRecord.origin = ray.origin + ray.direction * hitRecord.t;
+					hitRecord.normal = (hitRecord.origin - sphere.origin).Normalized();
+					hitRecord.materialIndex = sphere.materialIndex;
+
+					return true;
+				}
+				
 			}
 
 			return false;
@@ -58,6 +71,8 @@ namespace dae
 				hitRecord.origin = ray.origin + ray.direction * t;
 				hitRecord.normal = plane.normal;
 				hitRecord.materialIndex = plane.materialIndex;
+
+				return true;
 			}
 			
 			return false;

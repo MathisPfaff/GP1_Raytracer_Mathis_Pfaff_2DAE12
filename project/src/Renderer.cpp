@@ -1,6 +1,7 @@
 //External includes
 #include "SDL.h"
 #include "SDL_surface.h"
+#include <iostream>
 
 //Project includes
 #include "Renderer.h"
@@ -27,7 +28,7 @@ void Renderer::Render(Scene* pScene) const
 	auto& materials = pScene->GetMaterials();
 	auto& lights = pScene->GetLights();
 
-	Vector3 rayDirection{0,0,1};
+	
 
 	float aspectRatio = float(m_Width) / m_Height;
 
@@ -35,8 +36,34 @@ void Renderer::Render(Scene* pScene) const
 	{
 		for (int py{}; py < m_Height; ++py)
 		{
-			//TODO W1: 7
+			//TODO W1: 5
+			Vector3 rayDirection{ 0,0,1.f };
+			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
+			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
 
+			rayDirection.Normalize();
+
+			ColorRGB finalColor{};
+
+			Ray viewRay{ {0,0,0}, rayDirection };
+
+			HitRecord closestHit{};
+			pScene->GetClosestHit(viewRay, closestHit);
+
+			if (closestHit.didHit)
+			{
+				finalColor = materials[closestHit.materialIndex]->Shade();
+
+				//const float scaled_t = (closestHit.t - 50.f) / 40.f;
+				//finalColor = { scaled_t, scaled_t, scaled_t };
+				//
+				//const float scaled_t = closestHit.t / 500.f;
+				//finalColor = { scaled_t, scaled_t, scaled_t };
+			}
+			
+			
+			//TODO W1: 7
+			/*
 			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
 			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
 
@@ -53,7 +80,7 @@ void Renderer::Render(Scene* pScene) const
 				const float scaled_t = closestHit.t / 500.f;
 				finalColor = { scaled_t, scaled_t, scaled_t };
 			}
-			
+			*/
 			
 			//TODO W1: 6
 			/*

@@ -29,14 +29,41 @@ namespace dae {
 	void dae::Scene::GetClosestHit(const Ray& ray, HitRecord& closestHit) const
 	{
 		//todo W1
-		for (const Sphere& t : m_SphereGeometries)
+		HitRecord tempHit{};
+		for (const Plane& p : m_PlaneGeometries)
+		{
+			GeometryUtils::HitTest_Plane(p, ray, tempHit);
+			closestHit = (tempHit.t < closestHit.t) ? tempHit : closestHit;
+		}
+
+		for (const Sphere& s : m_SphereGeometries)
+		{
+			GeometryUtils::HitTest_Sphere(s, ray, tempHit);
+			closestHit = (tempHit.t < closestHit.t) ? tempHit : closestHit;
+		}
+
+		/*
+		HitRecord planeHit{};
+		HitRecord sphereHit{};
+		for (const Plane& p : m_PlaneGeometries)
+		{
+			GeometryUtils::HitTest_Plane(p, ray, planeHit);
+			closestHit = (planeHit.t < closestHit.t && planeHit.didHit) ? planeHit : closestHit;
+		}
+
+		for (const Sphere& s : m_SphereGeometries)
 		{
 			HitRecord tempHit{};
-			
-			GeometryUtils::HitTest_Sphere(t, ray, tempHit);
+			GeometryUtils::HitTest_Sphere(s, ray, tempHit);
 
-			closestHit = (tempHit.t < closestHit.t && tempHit.didHit) ? tempHit : closestHit;
+			sphereHit = (tempHit.t < sphereHit.t && tempHit.didHit) ? tempHit : sphereHit;
 		}
+
+		if (sphereHit.t < planeHit.t)
+		{
+			closestHit = sphereHit;
+		}
+		*/
 	}
 
 	bool Scene::DoesHit(const Ray& ray) const
