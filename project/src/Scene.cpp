@@ -41,29 +41,6 @@ namespace dae {
 			GeometryUtils::HitTest_Sphere(s, ray, tempHit);
 			closestHit = (tempHit.t < closestHit.t) ? tempHit : closestHit;
 		}
-
-		/*
-		HitRecord planeHit{};
-		HitRecord sphereHit{};
-		for (const Plane& p : m_PlaneGeometries)
-		{
-			GeometryUtils::HitTest_Plane(p, ray, planeHit);
-			closestHit = (planeHit.t < closestHit.t && planeHit.didHit) ? planeHit : closestHit;
-		}
-
-		for (const Sphere& s : m_SphereGeometries)
-		{
-			HitRecord tempHit{};
-			GeometryUtils::HitTest_Sphere(s, ray, tempHit);
-
-			sphereHit = (tempHit.t < sphereHit.t && tempHit.didHit) ? tempHit : sphereHit;
-		}
-
-		if (sphereHit.t < planeHit.t)
-		{
-			closestHit = sphereHit;
-		}
-		*/
 	}
 
 	bool Scene::DoesHit(const Ray& ray) const
@@ -159,6 +136,41 @@ namespace dae {
 		AddPlane({ 0.f, -75.f, 0.f }, { 0.f, 1.f,0.f }, matId_Solid_Yellow);
 		AddPlane({ 0.f, 75.f, 0.f }, { 0.f, -1.f,0.f }, matId_Solid_Yellow);
 		AddPlane({ 0.f, 0.f, 125.f }, { 0.f, 0.f,-1.f }, matId_Solid_Magenta);
+	}
+#pragma endregion
+
+#pragma region SCENE W2
+	void Scene_W2::Initialize()
+	{
+		m_Camera.origin = { 0.0f, 3.f, -9.f };
+		m_Camera.fovAngle = 45.0f;
+
+		// Materials
+		// Material_ID id0 = SolidColor Material(RED);
+		constexpr unsigned char matId_Solid_Red = 0;
+		const unsigned char matId_Solid_Blue = AddMaterial(new Material_SolidColor{ colors::Blue });
+
+		const unsigned char matId_Solid_Yellow = AddMaterial(new Material_SolidColor{ colors::Yellow });
+		const unsigned char matId_Solid_Green = AddMaterial(new Material_SolidColor{ colors::Green });
+		const unsigned char matId_Solid_Magenta = AddMaterial(new Material_SolidColor{ colors::Magenta });
+
+		// Planes
+		AddPlane({ -5.0f, 0.f, 0.0f }, { 1.0f, 0.0f, 0.0f }, matId_Solid_Green);
+		AddPlane({ 5.0f, 0.0f, 10.0f }, { -1.0f, 0.0f, 0.0f }, matId_Solid_Green);
+		AddPlane({ 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, matId_Solid_Yellow);
+		AddPlane({ 0.0f, 10.0f, 0.0f }, { 0.0f, -1.0f, 0.0f }, matId_Solid_Yellow);
+		AddPlane({ 0.0f, 0.0f, 10.0f }, { 0.0f, 0.0f, -1.0f }, matId_Solid_Magenta);
+
+		// Spheres
+		AddSphere({ -1.75f, 1.f, 0.f }, 0.75f, matId_Solid_Red);
+		AddSphere({ 0.f, 1.f, 0.f }, 0.75f, matId_Solid_Blue);
+		AddSphere({ 1.75f, 1.f, 0.f }, 0.75f, matId_Solid_Red);
+		AddSphere({ -1.75f, 3.f, 0.f }, 0.75f, matId_Solid_Blue);
+		AddSphere({ 0.f, 3.0f, 0.f }, 0.75f, matId_Solid_Red);
+		AddSphere({ 1.75f, 3.0f, 0.f }, 0.75f, matId_Solid_Blue);
+
+		// Light
+		AddPointLight({ 0.0f, 5.5f, -5.0f }, 70.0f, colors::White);
 	}
 #pragma endregion
 }

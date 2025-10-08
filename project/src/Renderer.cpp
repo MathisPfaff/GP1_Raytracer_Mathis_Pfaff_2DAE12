@@ -25,27 +25,32 @@ Renderer::Renderer(SDL_Window * pWindow) :
 void Renderer::Render(Scene* pScene) const
 {
 	Camera& camera = pScene->GetCamera();
+	Matrix const& cameraToWorld = camera.CalculateCameraToWorld();
 	auto& materials = pScene->GetMaterials();
 	auto& lights = pScene->GetLights();
 
 	
 
-	float aspectRatio = float(m_Width) / m_Height;
+	float const aspectRatio = float(m_Width) / m_Height;
+
+	float fovAngleRad{ camera.fovAngle * (PI / 180) };
+	float const fov = tan(fovAngleRad / 2);
 
 	for (int px{}; px < m_Width; ++px)
 	{
 		for (int py{}; py < m_Height; ++py)
 		{
-			//TODO W1: 5
+			//TODO W2: 1
 			Vector3 rayDirection{ 0,0,1.f };
-			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
-			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
+			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio * fov;
+			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height)) * fov;
 
+			rayDirection = cameraToWorld.TransformVector(rayDirection);
 			rayDirection.Normalize();
 
 			ColorRGB finalColor{};
 
-			Ray viewRay{ {0,0,0}, rayDirection };
+			Ray viewRay{ camera.origin, rayDirection };
 
 			HitRecord closestHit{};
 			pScene->GetClosestHit(viewRay, closestHit);
@@ -53,133 +58,7 @@ void Renderer::Render(Scene* pScene) const
 			if (closestHit.didHit)
 			{
 				finalColor = materials[closestHit.materialIndex]->Shade();
-
-				//const float scaled_t = (closestHit.t - 50.f) / 40.f;
-				//finalColor = { scaled_t, scaled_t, scaled_t };
-				//
-				//const float scaled_t = closestHit.t / 500.f;
-				//finalColor = { scaled_t, scaled_t, scaled_t };
 			}
-			
-			
-			//TODO W1: 7
-			/*
-			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
-			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
-
-			ColorRGB finalColor{};
-
-			Ray viewRay{ {0,0,0}, rayDirection };
-
-			HitRecord closestHit{};
-			Plane testPlane{ {0.f,-50.f,0.f}, {0.f,1.f,0.f}, 0 };
-			GeometryUtils::HitTest_Plane(testPlane, viewRay, closestHit);
-
-			if (closestHit.didHit)
-			{
-				const float scaled_t = closestHit.t / 500.f;
-				finalColor = { scaled_t, scaled_t, scaled_t };
-			}
-			*/
-			
-			//TODO W1: 6
-			/*
-			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
-			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
-
-			ColorRGB finalColor{};
-
-			Ray viewRay{ {0,0,0}, rayDirection };
-
-			HitRecord closestHit{};
-			Plane testPlane{ {0.f,-50.f,0.f}, {0.f,1.f,0.f}, 0 };
-			GeometryUtils::HitTest_Plane(testPlane, viewRay, closestHit);
-
-			if(closestHit.didHit)
-			{
-				finalColor = materials[closestHit.materialIndex]->Shade();
-			}
-			*/
-			
-			//TODO W1: 4
-			/*
-			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
-			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
-
-			ColorRGB finalColor{};
-
-			Ray viewRay{ {0,0,0}, rayDirection };
-
-			HitRecord closestHit{};
-			pScene->GetClosestHit(viewRay, closestHit);
-
-			if(closestHit.didHit)
-			{
-				finalColor = materials[closestHit.materialIndex]->Shade();
-			}
-			*/
-			
-			//TODO W1: 3
-			/*
-			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
-			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
-
-			ColorRGB finalColor{};
-
-			Ray viewRay{ {0,0,0}, rayDirection };
-
-			HitRecord closestHit{};
-
-			Sphere testSphere{ {0,0,100}, 50.f, 0 };
-
-			GeometryUtils::HitTest_Sphere(testSphere, viewRay, closestHit);
-
-			if (closestHit.didHit)
-			{
-				const float scaled_t = (closestHit.t - 50.f) / 40.f;
-				finalColor = { scaled_t, scaled_t, scaled_t };
-			}
-			*/
-			
-			//TODO W1: 2
-			/*
-			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio;
-			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
-
-			Ray viewRay{ {0,0,0}, rayDirection };
-			
-			HitRecord closestHit{};
-			
-			Sphere testSphere{ {0,0,100}, 50.f, 0 };
-			
-			GeometryUtils::HitTest_Sphere(testSphere, viewRay, closestHit);
-
-			if(closestHit.didHit)
-			{
-				finalColor = materials[testSphere.materialIndex]->Shade(closestHit);
-			}
-			else
-			{
-				finalColor = { 0,0,0 };
-			}
-			*/
-			
-			//TODO W1: 1
-			/*
-			//NDC
-			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1);
-			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height));
-			
-			//NSS
-			//rayDirection.x = float(px) / m_Width;
-			//rayDirection.y = float(py) / m_Height;
-			
-			//SS
-			//rayDirection = Vector3{ float(px), float(py), 1 };
-			
-			Ray hitray{ {0, 0, 0}, rayDirection};
-			ColorRGB finalColor{ rayDirection.x, rayDirection.y, rayDirection.z };
-			*/
 			
 			//Update Color in Buffer
 			finalColor.MaxToOne();
