@@ -37,7 +37,6 @@ void Renderer::Render(Scene* pScene) const
 	{
 		for (int py{}; py < m_Height; ++py)
 		{
-			//TODO W2: 1
 			Vector3 rayDirection{ 0,0,1.f };
 			rayDirection.x = ((2 * ((px + 0.5f) / m_Width)) - 1) * aspectRatio * fov;
 			rayDirection.y = (1 - 2 * ((py + 0.5f) / m_Height)) * fov;

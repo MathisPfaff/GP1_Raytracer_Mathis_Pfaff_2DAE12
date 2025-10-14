@@ -37,18 +37,45 @@ namespace dae
 
 		void Update(Timer* pTimer)
 		{
-			const float deltaTime = pTimer->GetElapsed();
+			float const deltaTime = pTimer->GetElapsed();
+			
 
 			//Keyboard Input
 			const uint8_t* pKeyboardState = SDL_GetKeyboardState(nullptr);
-
+			float const rotateSpeed{ 0.1f };
+			float const moveSpeed{ (pKeyboardState[SDL_SCANCODE_LSHIFT]) ? 10.f : 5.f };
 
 			//Mouse Input
 			int mouseX{}, mouseY{};
 			const uint32_t mouseState = SDL_GetRelativeMouseState(&mouseX, &mouseY);
 
 			//todo: W2
-			//throw std::runtime_error("Not Implemented Yet");
+			
+			if ((mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) && (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT)))
+			{
+				origin -= moveSpeed * mouseY * deltaTime * up;
+				origin += moveSpeed * mouseX * deltaTime * right;
+
+			}
+			else if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT))
+			{
+				origin -= moveSpeed * mouseY * deltaTime * forward;
+
+				totalYaw += rotateSpeed * mouseX * deltaTime;
+
+				Matrix rotationMatrix{ Matrix::CreateRotationY(totalYaw) };
+
+				forward = rotationMatrix.TransformVector(Vector3::UnitZ).Normalized();
+			}
+			else if (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT))
+			{
+				totalPitch -= rotateSpeed * mouseY * deltaTime;
+				totalYaw += rotateSpeed * mouseX * deltaTime;
+
+				Matrix rotationMatrix{ Matrix::CreateRotationY(totalYaw) * Matrix::CreateRotationX(totalPitch) };
+
+				forward = rotationMatrix.TransformVector(Vector3::UnitZ).Normalized();
+			}
 		}
 	};
 }
