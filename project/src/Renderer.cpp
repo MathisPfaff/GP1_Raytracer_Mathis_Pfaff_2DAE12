@@ -29,12 +29,9 @@ void Renderer::Render(Scene* pScene) const
 	auto& materials = pScene->GetMaterials();
 	auto& lights = pScene->GetLights();
 
-	
-
 	float const aspectRatio = float(m_Width) / m_Height;
 
-	float fovAngleRad{ camera.fovAngle * (PI / 180) };
-	float const fov = tan(fovAngleRad / 2);
+	float const fov = tan(camera.fovAngle * TO_RADIANS / 2);
 
 	for (int px{}; px < m_Width; ++px)
 	{
@@ -42,8 +39,8 @@ void Renderer::Render(Scene* pScene) const
 		{
 			//TODO W2: 1
 			Vector3 rayDirection{ 0,0,1.f };
-			rayDirection.x = ((2 * ((float(px) + 0.5) / m_Width)) - 1) * aspectRatio * fov;
-			rayDirection.y = 1 - (2 * ((float(py) + 0.5) / m_Height)) * fov;
+			rayDirection.x = ((2 * ((px + 0.5f) / m_Width)) - 1) * aspectRatio * fov;
+			rayDirection.y = (1 - 2 * ((py + 0.5f) / m_Height)) * fov;
 
 			rayDirection = cameraToWorld.TransformVector(rayDirection);
 			rayDirection.Normalize();
@@ -69,6 +66,7 @@ void Renderer::Render(Scene* pScene) const
 				static_cast<uint8_t>(finalColor.b * 255));
 		}
 	}
+	
 
 	//@END
 	//Update SDL Surface

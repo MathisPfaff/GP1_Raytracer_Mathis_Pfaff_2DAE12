@@ -32,11 +32,7 @@ namespace dae
 			right = Vector3::Cross(Vector3::UnitY, forward).Normalized();
 			up = Vector3::Cross(forward, right).Normalized();
 
-			return { { right , 0 },
-						{ up, 0 },
-						{ forward, 0 },
-						{ origin, 1 } 
-			};
+			return { right, up, forward, origin };
 		}
 
 		void Update(Timer* pTimer)
