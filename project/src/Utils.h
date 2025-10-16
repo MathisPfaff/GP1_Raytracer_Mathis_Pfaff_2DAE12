@@ -11,7 +11,6 @@ namespace dae
 		//SPHERE HIT-TESTS
 		inline bool HitTest_Sphere(const Sphere& sphere, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
-			//todo W1
 			Vector3 vectorL = sphere.origin - ray.origin;
 
 			float od2 = dae::Square(Vector3::Reject(vectorL, ray.direction).Magnitude());
@@ -19,7 +18,7 @@ namespace dae
 
 			if (od2 > dae::Square(sphere.radius))
 			{
-				hitRecord.didHit = false;
+				if (!ignoreHitRecord) hitRecord.didHit = false;
 			}
 			else
 			{
@@ -27,15 +26,18 @@ namespace dae
 				
 				if (t < ray.min || t >= ray.max)
 				{
-					hitRecord.didHit = false;
+					if (!ignoreHitRecord) hitRecord.didHit = false;
 				}
 				else
 				{
-					hitRecord.didHit = true;
-					hitRecord.t = t;
-					hitRecord.origin = ray.origin + ray.direction * hitRecord.t;
-					hitRecord.normal = (hitRecord.origin - sphere.origin).Normalized();
-					hitRecord.materialIndex = sphere.materialIndex;
+					if (!ignoreHitRecord)
+					{
+						hitRecord.didHit = true;
+						hitRecord.t = t;
+						hitRecord.origin = ray.origin + ray.direction * hitRecord.t;
+						hitRecord.normal = (hitRecord.origin - sphere.origin).Normalized();
+						hitRecord.materialIndex = sphere.materialIndex;
+					}
 
 					return true;
 				}
@@ -55,22 +57,24 @@ namespace dae
 		//PLANE HIT-TESTS
 		inline bool HitTest_Plane(const Plane& plane, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
-			//todo W1
 			Vector3 Vectorl = plane.origin - ray.origin;
 
 			float t = Vector3::Dot(Vectorl, plane.normal) / Vector3::Dot(ray.direction, plane.normal);
 			
 			if(t < ray.min || t >= ray.max)
 			{
-				hitRecord.didHit = false;
+				if (!ignoreHitRecord) hitRecord.didHit = false;
 			}
 			else
 			{
-				hitRecord.didHit = true;
-				hitRecord.t = t;
-				hitRecord.origin = ray.origin + ray.direction * t;
-				hitRecord.normal = plane.normal;
-				hitRecord.materialIndex = plane.materialIndex;
+				if (!ignoreHitRecord)
+				{
+					hitRecord.didHit = true;
+					hitRecord.t = t;
+					hitRecord.origin = ray.origin + ray.direction * t;
+					hitRecord.normal = plane.normal;
+					hitRecord.materialIndex = plane.materialIndex;
+				}
 
 				return true;
 			}

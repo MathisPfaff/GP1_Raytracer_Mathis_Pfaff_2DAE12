@@ -53,7 +53,23 @@ void Renderer::Render(Scene* pScene) const
 
 			if (closestHit.didHit)
 			{
-				finalColor = materials[closestHit.materialIndex]->Shade();
+				float lightIntensity = 1.f;
+
+				for (Light const& light : lights)
+				{
+					Ray shadowRay{};
+					shadowRay.origin = closestHit.origin + closestHit.normal * 0.001f;
+					shadowRay.direction = (light.origin - closestHit.origin).Normalized();
+					shadowRay.max = (light.origin - closestHit.origin).Magnitude();
+
+					if (pScene->DoesHit(shadowRay))
+					{
+						lightIntensity /= 2;
+					}
+				}
+
+				finalColor = materials[closestHit.materialIndex]->Shade() * lightIntensity;
+				
 			}
 			
 			//Update Color in Buffer
