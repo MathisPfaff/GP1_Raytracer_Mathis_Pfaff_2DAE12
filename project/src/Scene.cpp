@@ -163,22 +163,22 @@ namespace dae {
 		const unsigned char matId_Solid_Magenta = AddMaterial(new Material_SolidColor{ colors::Magenta });
 
 		// Planes
-		AddPlane({ -5.0f, 0.f, 0.0f }, { 1.0f, 0.0f, 0.0f }, matId_Solid_Green);
-		AddPlane({ 5.0f, 0.0f, 10.0f }, { -1.0f, 0.0f, 0.0f }, matId_Solid_Green);
-		AddPlane({ 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, matId_Solid_Yellow);
-		AddPlane({ 0.0f, 10.0f, 0.0f }, { 0.0f, -1.0f, 0.0f }, matId_Solid_Yellow);
-		AddPlane({ 0.0f, 0.0f, 10.0f }, { 0.0f, 0.0f, -1.0f }, matId_Solid_Magenta);
+		AddPlane({ -5.f,  0.f,  0.f }, {  1.f,  0.f,  0.f }, matId_Solid_Green);
+		AddPlane({  5.f,  0.f,  0.f }, { -1.f,  0.f,  0.f }, matId_Solid_Green);
+		AddPlane({  0.f,  0.f,  0.f }, {  0.f,  1.f,  0.f }, matId_Solid_Yellow);
+		AddPlane({  0.f, 10.f,  0.f }, {  0.f, -1.f,  0.f }, matId_Solid_Yellow);
+		AddPlane({  0.f,  0.f, 10.f }, {  0.f,  0.f, -1.f }, matId_Solid_Magenta);
 
 		// Spheres
 		AddSphere({ -1.75f, 1.f, 0.f }, 0.75f, matId_Solid_Red);
-		AddSphere({ 0.f, 1.f, 0.f }, 0.75f, matId_Solid_Blue);
-		AddSphere({ 1.75f, 1.f, 0.f }, 0.75f, matId_Solid_Red);
+		AddSphere({    0.f, 1.f, 0.f }, 0.75f, matId_Solid_Blue);
+		AddSphere({  1.75f, 1.f, 0.f }, 0.75f, matId_Solid_Red);
 		AddSphere({ -1.75f, 3.f, 0.f }, 0.75f, matId_Solid_Blue);
-		AddSphere({ 0.f, 3.0f, 0.f }, 0.75f, matId_Solid_Red);
-		AddSphere({ 1.75f, 3.0f, 0.f }, 0.75f, matId_Solid_Blue);
+		AddSphere({    0.f, 3.f, 0.f }, 0.75f, matId_Solid_Red);
+		AddSphere({  1.75f, 3.f, 0.f }, 0.75f, matId_Solid_Blue);
 
 		// Light
-		AddPointLight({ 0.0f, 5.5f, -5.0f }, 70.0f, colors::White);
+		AddPointLight({ 0.0f, 5.f, -5.0f }, 70.0f, colors::White);
 	}
 #pragma endregion
 }

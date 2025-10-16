@@ -53,7 +53,7 @@ void Renderer::Render(Scene* pScene) const
 
 			if (closestHit.didHit)
 			{
-				float lightIntensity = 1.f;
+				float lightIntensity{ 1.f };
 
 				for (Light const& light : lights)
 				{
