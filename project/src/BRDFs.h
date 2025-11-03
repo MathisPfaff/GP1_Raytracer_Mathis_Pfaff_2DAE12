@@ -31,9 +31,9 @@ namespace dae
 		 */
 		static ColorRGB Phong(float ks, float exp, const Vector3& l, const Vector3& v, const Vector3& n)
 		{
-			//todo: W3
-			throw std::runtime_error("Not Implemented Yet");
-			return {};
+			const Vector3& r = -l - 2 * Vector3::Dot(-l, n) * n;
+			float cos = Vector3::Dot(r, v);
+			return ks * powf(cos, exp) * colors::White;
 		}
 
 		/**

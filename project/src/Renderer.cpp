@@ -56,11 +56,18 @@ void Renderer::Render(Scene* pScene) const
 				for (const auto& light : lights)
 				{
 					Vector3 lightDirection{ LightUtils::GetDirectionToLight(light, closestHit.origin) };
+					lightDirection.Normalize();
 					Ray lightRay{};
 
-					lightRay.origin = closestHit.origin + closestHit.normal * 0.001f;
-					lightRay.direction = (light.origin - closestHit.origin).Normalized();
-					lightRay.max = (light.origin - closestHit.origin).Magnitude();
+					//lightRay.origin = closestHit.origin;
+					//lightRay.min = 0.01f;
+					//lightRay.max = lightDirection.Normalize();
+					//lightRay.direction = lightDirection;
+
+					lightRay.origin = closestHit.origin;
+					lightRay.min = 0.01f;
+					lightRay.max = lightDirection.Magnitude();
+					lightRay.direction = lightDirection;
 					
 					if (pScene->DoesHit(lightRay))
 					{
@@ -69,7 +76,7 @@ void Renderer::Render(Scene* pScene) const
 					
 					const ColorRGB& radiance{ LightUtils::GetRadiance(light, closestHit.origin) };
 					const float observedArea{ std::max(0.f, Vector3::Dot(closestHit.normal, lightRay.direction) / (lightRay.direction.Magnitude() * closestHit.normal.Magnitude())) };
-					const ColorRGB& BRDFrgb{ materials[closestHit.materialIndex]->Shade(closestHit, lightDirection, -rayDirection) };
+					const ColorRGB& BRDFrgb{ materials[closestHit.materialIndex]->Shade(closestHit, lightRay.direction, -rayDirection)};
 
 
 					finalColor += radiance * BRDFrgb * observedArea;
