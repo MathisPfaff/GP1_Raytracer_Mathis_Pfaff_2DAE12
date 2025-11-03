@@ -80,7 +80,32 @@ int main(int argc, char* args[])
 			case SDL_KEYUP:
 				if (e.key.keysym.scancode == SDL_SCANCODE_X)
 					takeScreenshot = true;
-				break;
+
+				if (e.key.keysym.scancode == SDL_SCANCODE_F2)
+				{
+					pRenderer->ToggleShadows();
+					std::cout << "SHADOWS TOGGLED\n";
+				}
+				if (e.key.keysym.scancode == SDL_SCANCODE_F3)
+				{
+					pRenderer->CycleLightingMode();
+					std::cout << "LIGHTING MODE: ";
+					switch (pRenderer->GetLightingMode())
+					{
+					case Renderer::LightingMode::BRDF:
+						std::cout << "BRDF\n";
+						break;
+					case Renderer::LightingMode::Combined:
+						std::cout << "COMBINED\n";
+						break;
+					case Renderer::LightingMode::ObservedArea:
+						std::cout << "OBSERVED AREA\n";
+						break;
+					case Renderer::LightingMode::Radiance:
+						std::cout << "RADIANCE\n";
+						break;
+					}
+				}
 			}
 		}
 

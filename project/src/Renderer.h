@@ -10,6 +10,14 @@ namespace dae
 	class Renderer final
 	{
 	public:
+		enum class LightingMode
+		{
+			ObservedArea,
+			Radiance,
+			BRDF,
+			Combined
+		};
+		
 		Renderer(SDL_Window* pWindow);
 		~Renderer() = default;
 
@@ -20,6 +28,9 @@ namespace dae
 
 		void Render(Scene* pScene) const;
 		bool SaveBufferToImage() const;
+		void CycleLightingMode();
+		LightingMode GetLightingMode() const { return m_CurrentLightingMode; };
+		void ToggleShadows() { m_ShadowsEnabled = !m_ShadowsEnabled; };
 
 	private:
 		SDL_Window* m_pWindow{};
@@ -29,5 +40,8 @@ namespace dae
 
 		int m_Width{};
 		int m_Height{};
+
+		LightingMode m_CurrentLightingMode{ LightingMode::Combined };
+		bool m_ShadowsEnabled{ true };
 	};
 }

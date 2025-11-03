@@ -63,17 +63,34 @@ void Renderer::Render(Scene* pScene) const
 					lightRay.max = lightDirection.Normalize();
 					lightRay.direction = lightDirection;
 					
-					if (pScene->DoesHit(lightRay))
+					if (m_ShadowsEnabled)
 					{
-						continue;
+						if (pScene->DoesHit(lightRay))
+						{
+							continue;
+						}
 					}
+					
 					
 					const ColorRGB& radiance{ LightUtils::GetRadiance(light, closestHit.origin) };
 					const float observedArea{ std::max(0.f, Vector3::Dot(closestHit.normal, lightRay.direction) / (lightRay.direction.Magnitude() * closestHit.normal.Magnitude())) };
 					const ColorRGB& BRDFrgb{ materials[closestHit.materialIndex]->Shade(closestHit, lightRay.direction, -rayDirection)};
 
-
-					finalColor += radiance * BRDFrgb * observedArea;
+					switch (m_CurrentLightingMode)
+					{
+					case LightingMode::ObservedArea:
+						finalColor += ColorRGB{ observedArea, observedArea, observedArea };
+						break;
+					case LightingMode::Radiance:
+						finalColor += radiance;
+						break;
+					case LightingMode::BRDF:
+						finalColor += BRDFrgb;
+						break;
+					case LightingMode::Combined:
+						finalColor += radiance * BRDFrgb * observedArea;
+						break;
+					}
 				}
 			}
 
@@ -97,4 +114,24 @@ void Renderer::Render(Scene* pScene) const
 bool Renderer::SaveBufferToImage() const
 {
 	return SDL_SaveBMP(m_pBuffer, "RayTracing_Buffer.bmp");
+}
+
+void Renderer::CycleLightingMode()
+{
+	switch (m_CurrentLightingMode)
+	{
+	case LightingMode::BRDF:
+		m_CurrentLightingMode = LightingMode::ObservedArea;
+		break;
+	case LightingMode::ObservedArea:
+		m_CurrentLightingMode = LightingMode::Radiance;
+		break;
+	case LightingMode::Radiance:
+		m_CurrentLightingMode = LightingMode::Combined;
+		break;
+	case LightingMode::Combined:
+		m_CurrentLightingMode = LightingMode::BRDF;
+		break;
+
+	}
 }
