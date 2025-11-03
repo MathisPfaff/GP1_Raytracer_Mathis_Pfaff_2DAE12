@@ -101,10 +101,10 @@ namespace dae
 		Scene_W3_TestScene() = default;
 		~Scene_W3_TestScene() override = default;
 
-		Scene_W3_TestScene(const Scene_W2&) = delete;
-		Scene_W3_TestScene(Scene_W2&&) noexcept = delete;
-		Scene_W3_TestScene& operator=(const Scene_W2&) = delete;
-		Scene_W3_TestScene& operator=(Scene_W2&&) noexcept = delete;
+		Scene_W3_TestScene(const Scene_W3_TestScene&) = delete;
+		Scene_W3_TestScene(Scene_W3_TestScene&&) noexcept = delete;
+		Scene_W3_TestScene& operator=(const Scene_W3_TestScene&) = delete;
+		Scene_W3_TestScene& operator=(Scene_W3_TestScene&&) noexcept = delete;
 
 		void Initialize() override;
 	};

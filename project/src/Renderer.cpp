@@ -55,18 +55,12 @@ void Renderer::Render(Scene* pScene) const
 			{
 				for (const auto& light : lights)
 				{
-					Vector3 lightDirection{ LightUtils::GetDirectionToLight(light, closestHit.origin) };
-					lightDirection.Normalize();
+					Vector3 lightDirection = LightUtils::GetDirectionToLight(light, closestHit.origin);
 					Ray lightRay{};
 
-					//lightRay.origin = closestHit.origin;
-					//lightRay.min = 0.01f;
-					//lightRay.max = lightDirection.Normalize();
-					//lightRay.direction = lightDirection;
-
 					lightRay.origin = closestHit.origin;
-					lightRay.min = 0.01f;
-					lightRay.max = lightDirection.Magnitude();
+					lightRay.min = 0.1f;
+					lightRay.max = lightDirection.Normalize();
 					lightRay.direction = lightDirection;
 					
 					if (pScene->DoesHit(lightRay))
