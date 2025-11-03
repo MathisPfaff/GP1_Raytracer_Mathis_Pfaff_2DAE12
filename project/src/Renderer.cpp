@@ -65,11 +65,12 @@ void Renderer::Render(Scene* pScene) const
 					lightRay.max = lightDirection.Normalize();
 					lightRay.direction = lightDirection;
 					
-					const ColorRGB radiance{ LightUtils::GetRadiance(light, closestHit.origin) };
-					float observedArea{ std::max(0.f, Vector3::Dot(closestHit.normal, lightRay.direction) / (lightRay.direction.Magnitude() * closestHit.normal.Magnitude())) };
+					const ColorRGB& radiance{ LightUtils::GetRadiance(light, closestHit.origin) };
+					const float observedArea{ std::max(0.f, Vector3::Dot(closestHit.normal, lightRay.direction) / (lightRay.direction.Magnitude() * closestHit.normal.Magnitude())) };
+					const ColorRGB& BRDFrgb{ materials[closestHit.materialIndex]->Shade(closestHit, lightDirection, -rayDirection) };
 
 
-					finalColor += radiance * observedArea;
+					finalColor += radiance * BRDFrgb * observedArea;
 
 					
 					
