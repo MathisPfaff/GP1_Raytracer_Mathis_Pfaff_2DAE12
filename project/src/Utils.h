@@ -124,16 +124,13 @@ namespace dae
 		//Direction from target to light
 		inline Vector3 GetDirectionToLight(const Light& light, const Vector3 origin)
 		{
-			//todo W3
-			throw std::runtime_error("Not Implemented Yet");
-			return {};
+			Vector3 direction = light.origin - origin;
+			return direction;
 		}
 
 		inline ColorRGB GetRadiance(const Light& light, const Vector3& target)
 		{
-			//todo W3
-			throw std::runtime_error("Not Implemented Yet");
-			return {};
+			return light.color * (light.intensity / (light.origin - target).SqrMagnitude());
 		}
 	}
 
