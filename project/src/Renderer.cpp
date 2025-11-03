@@ -53,17 +53,19 @@ void Renderer::Render(Scene* pScene) const
 
 			if (closestHit.didHit)
 			{
-				//float shadow{ 1.f };
-
-				for (Light const& light : lights)
+				for (const auto& light : lights)
 				{
 					Vector3 lightDirection{ LightUtils::GetDirectionToLight(light, closestHit.origin) };
 					Ray lightRay{};
 
-					lightRay.origin = closestHit.origin;
-					lightRay.min = 0.1f;
-					lightRay.max = lightDirection.Normalize();
-					lightRay.direction = lightDirection;
+					lightRay.origin = closestHit.origin + closestHit.normal * 0.001f;
+					lightRay.direction = (light.origin - closestHit.origin).Normalized();
+					lightRay.max = (light.origin - closestHit.origin).Magnitude();
+					
+					if (pScene->DoesHit(lightRay))
+					{
+						continue;
+					}
 					
 					const ColorRGB& radiance{ LightUtils::GetRadiance(light, closestHit.origin) };
 					const float observedArea{ std::max(0.f, Vector3::Dot(closestHit.normal, lightRay.direction) / (lightRay.direction.Magnitude() * closestHit.normal.Magnitude())) };
@@ -71,28 +73,12 @@ void Renderer::Render(Scene* pScene) const
 
 
 					finalColor += radiance * BRDFrgb * observedArea;
-
-					
-					
-					
-					//Ray shadowRay{};
-					//shadowRay.origin = closestHit.origin + closestHit.normal * 0.001f;
-					//shadowRay.direction = (light.origin - closestHit.origin).Normalized();
-					//shadowRay.max = (light.origin - closestHit.origin).Magnitude();
-					//
-					//if (pScene->DoesHit(shadowRay))
-					//{
-					//	shadow /= 2;
-					//}
 				}
-
-				//finalColor = materials[closestHit.materialIndex]->Shade() * shadow;
-				
 			}
 
 			//Update Color in Buffer
 			finalColor.MaxToOne();
-
+			
 			m_pBufferPixels[px + (py * m_Width)] = SDL_MapRGB(m_pBuffer->format,
 				static_cast<uint8_t>(finalColor.r * 255),
 				static_cast<uint8_t>(finalColor.g * 255),
