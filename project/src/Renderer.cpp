@@ -55,7 +55,7 @@ void Renderer::Render(Scene* pScene) const
 			{
 				for (const auto& light : lights)
 				{
-					Vector3 lightDirection = LightUtils::GetDirectionToLight(light, closestHit.origin);
+					Vector3 lightDirection{ LightUtils::GetDirectionToLight(light, closestHit.origin)};
 					Ray lightRay{};
 
 					lightRay.origin = closestHit.origin;

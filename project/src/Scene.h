@@ -108,4 +108,23 @@ namespace dae
 
 		void Initialize() override;
 	};
+
+	//+++++++++++++++++++++++++++++++++++++++++
+	//REFERENCE Scene
+	class Scene_Reference final : public Scene
+	{
+	public:
+		Scene_Reference() = default;
+		~Scene_Reference() override = default;
+
+		Scene_Reference(const Scene_Reference&) = delete;
+		Scene_Reference(Scene_Reference&&) noexcept = delete;
+		Scene_Reference& operator=(const Scene_Reference&) = delete;
+		Scene_Reference& operator=(Scene_Reference&&) noexcept = delete;
+
+		void Initialize() override;
+		void Update(Timer* pTimer) override;
+	private:
+		TriangleMesh* m_Meshes[3]{};
+	};
 }
