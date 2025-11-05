@@ -307,4 +307,48 @@ namespace dae {
 		}
 	}
 #pragma endregion
+
+#pragma region BUNNY SCENE
+
+	void Scene_Bunny::Initialize()
+	{
+		sceneName = "Bunny Scene";
+		m_Camera.origin = { 0,3,-9 };
+		m_Camera.fovAngle = 45.f;
+
+		const auto matLambert_GrayBlue = AddMaterial(new Material_Lambert({ .49f, 0.57f, 0.57f }, 1.f));
+		const auto matLambert_White = AddMaterial(new Material_Lambert(colors::White, 1.f));
+
+		AddPlane(Vector3{ 0.f, 0.f, 10.f }, Vector3{ 0.f, 0.f, -1.f }, matLambert_GrayBlue);
+		AddPlane(Vector3{ 0.f, 0.f, 0.f }, Vector3{ 0.f, 1.f, 0.f }, matLambert_GrayBlue);
+		AddPlane(Vector3{ 0.f, 10.f, 0.f }, Vector3{ 0.f, -1.f, 0.f }, matLambert_GrayBlue);
+		AddPlane(Vector3{ 5.f, 0.f, 0.f }, Vector3{ -1.f, 0.f, 0.f }, matLambert_GrayBlue);
+		AddPlane(Vector3{ -5.f, 0.f, 0.f }, Vector3{ 1.f, 0.f, 0.f }, matLambert_GrayBlue);
+
+
+		m_BunnyMesh = AddTriangleMesh(TriangleCullMode::NoCulling, matLambert_White);
+		Utils::ParseOBJ("Resources/lowpoly_bunny.obj",
+			m_BunnyMesh->positions,
+			m_BunnyMesh->normals,
+			m_BunnyMesh->indices);
+
+		m_BunnyMesh->UpdateTransforms();
+
+		m_BunnyMesh->Scale({ 2.f, 2.f, 2.f });
+		m_BunnyMesh->Translate({ .0f,0.f,0.f });
+
+
+
+		AddPointLight(Vector3{ 0.f, 5.f, 5.f }, 50.f, ColorRGB{ 1.f, .61f, .45f });
+		AddPointLight(Vector3{ -2.5f, 5.f, -5.f }, 70.f, ColorRGB{ 1.f, .8f, .45f });
+		AddPointLight(Vector3{ 2.5f, 2.5f, -5.f }, 50.f, ColorRGB{ .34f, .47f, .68f });
+	}
+	void Scene_Bunny::Update(Timer* pTimer)
+	{
+		Scene::Update(pTimer);
+
+		m_BunnyMesh->RotateY(PI_DIV_2 * pTimer->GetTotal());
+		m_BunnyMesh->UpdateTransforms();
+	}
+#pragma endregion
 }

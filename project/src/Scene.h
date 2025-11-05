@@ -127,4 +127,23 @@ namespace dae
 	private:
 		TriangleMesh* m_Meshes[3]{};
 	};
+
+	//+++++++++++++++++++++++++++++++++++++++++
+	//Bunny Scene
+	class Scene_Bunny final : public Scene
+	{
+	public:
+		Scene_Bunny() = default;
+		~Scene_Bunny() override = default;
+
+		Scene_Bunny(const Scene_Bunny&) = delete;
+		Scene_Bunny(Scene_Bunny&&) noexcept = delete;
+		Scene_Bunny& operator=(const Scene_Bunny&) = delete;
+		Scene_Bunny& operator=(Scene_Bunny&&) noexcept = delete;
+
+		void Initialize() override;
+		void Update(Timer* pTimer) override;
+	private:
+		TriangleMesh* m_BunnyMesh{};
+	};
 }
