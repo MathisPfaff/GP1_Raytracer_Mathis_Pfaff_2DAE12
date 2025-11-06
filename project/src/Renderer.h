@@ -7,6 +7,8 @@ struct SDL_Surface;
 namespace dae
 {
 	class Scene;
+	class Matrix;
+	class Vector3;
 	class Renderer final
 	{
 	public:
@@ -27,6 +29,7 @@ namespace dae
 		Renderer& operator=(Renderer&&) noexcept = delete;
 
 		void Render(Scene* pScene) const;
+		void RenderPixel(const Scene* pScene, uint32_t pixelIndex, float fov, float aspectRatio, const Matrix& cameraToWorld, const Vector3& cameraOrigin) const;
 		bool SaveBufferToImage() const;
 		void CycleLightingMode();
 		LightingMode GetLightingMode() const { return m_CurrentLightingMode; };
