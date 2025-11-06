@@ -33,6 +33,10 @@ int main(int argc, char* args[])
 		LeakDetector detector{};
 	#endif
 
+	std::string scene;
+	std::cout << "Enter r for reference scene or b for bunny scene: ";
+	std::cin >> scene;
+
 	//Create window + surfaces
 	SDL_Init(SDL_INIT_VIDEO);
 
@@ -52,9 +56,24 @@ int main(int argc, char* args[])
 	const auto pTimer = new Timer();
 	const auto pRenderer = new Renderer(pWindow);
 
-	const auto pScene = new Scene_Reference();
-	//const auto pScene = new Scene_Bunny();
-	pScene->Initialize();
+	Scene* pScene = nullptr;
+
+	if (scene == "r")
+	{
+		pScene = new Scene_Reference();
+		pScene->Initialize();
+	}
+	else if (scene == "b")
+	{
+		pScene = new Scene_Bunny();
+		pScene->Initialize();
+	}
+	else
+	{
+		std::cout << "Invalid scene, loading Reference scene\n";
+		pScene = new Scene_Reference();
+		pScene->Initialize();
+	}
 
 	//Start loop
 	pTimer->Start();

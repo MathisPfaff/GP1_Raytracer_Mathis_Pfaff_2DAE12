@@ -7,8 +7,8 @@ struct SDL_Surface;
 namespace dae
 {
 	class Scene;
-	class Matrix;
-	class Vector3;
+	struct Matrix;
+	struct Vector3;
 	class Renderer final
 	{
 	public:
