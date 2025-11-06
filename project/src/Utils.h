@@ -130,6 +130,7 @@ namespace dae
 			hitRecord.materialIndex = triangle.materialIndex;
 			hitRecord.origin = ray.origin + ray.direction * t;
 			hitRecord.normal = triangle.normal;
+
 			return true;
 		}
 
@@ -210,6 +211,7 @@ namespace dae
 
 				}
 			}
+
 			return hitRecord.didHit;
 		}
 

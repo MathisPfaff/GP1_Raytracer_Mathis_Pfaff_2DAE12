@@ -108,7 +108,10 @@ namespace dae
 			{
 				f0 = ColorRGB{ 0.04f, 0.04f, 0.04f };
 			}
-			else f0 = m_Albedo;
+			else
+			{
+				f0 = m_Albedo;
+			}
 
 			const ColorRGB& F = BRDF::FresnelFunction_Schlick(h, v, f0);
 			const float D = BRDF::NormalDistribution_GGX(hitRecord.normal, h, m_Roughness);
@@ -120,7 +123,11 @@ namespace dae
 			{
 				kd = colors::Black;
 			}
-			else kd = colors::White - F;
+			else
+			{
+				kd = colors::White - F;
+			}
+
 			const ColorRGB& diffuse = BRDF::Lambert(kd, m_Albedo);
 
 			return diffuse + specular;
