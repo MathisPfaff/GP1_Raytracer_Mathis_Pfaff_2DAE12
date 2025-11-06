@@ -37,13 +37,30 @@ namespace dae
 
 		void Update(Timer* pTimer)
 		{
-			float const deltaTime = pTimer->GetElapsed();
+			const float deltaTime = pTimer->GetElapsed();
 			
 
 			//Keyboard Input
 			const uint8_t* pKeyboardState = SDL_GetKeyboardState(nullptr);
-			float const rotateSpeed{ 0.1f };
-			float const moveSpeed{ (pKeyboardState[SDL_SCANCODE_LSHIFT]) ? 10.f : 5.f };
+			const float rotateSpeed{ 0.1f };
+			const float moveSpeed{ (pKeyboardState[SDL_SCANCODE_LSHIFT]) ? 10.f : 5.f };
+
+			if (pKeyboardState[SDL_SCANCODE_W]) 
+			{
+				origin += moveSpeed * deltaTime * forward;
+			}
+			if (pKeyboardState[SDL_SCANCODE_A]) 
+			{
+				origin -= moveSpeed * deltaTime * right;
+			}
+			if (pKeyboardState[SDL_SCANCODE_S]) 
+			{
+				origin -= moveSpeed * deltaTime * forward;
+			}
+			if (pKeyboardState[SDL_SCANCODE_D]) 
+			{
+				origin += moveSpeed * deltaTime * right;
+			}
 
 			//Mouse Input
 			int mouseX{}, mouseY{};
@@ -53,9 +70,7 @@ namespace dae
 			
 			if ((mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) && (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT)))
 			{
-				origin -= moveSpeed * mouseY * deltaTime * up;
-				origin += moveSpeed * mouseX * deltaTime * right;
-
+				origin += moveSpeed * mouseY * deltaTime * Vector3::UnitY;
 			}
 			else if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT))
 			{
@@ -63,7 +78,7 @@ namespace dae
 
 				totalYaw += rotateSpeed * mouseX * deltaTime;
 
-				Matrix rotationMatrix{ Matrix::CreateRotationY(totalYaw) };
+				Matrix rotationMatrix{ Matrix::CreateRotationY(totalYaw) * Matrix::CreateRotationX(totalPitch) };
 
 				forward = rotationMatrix.TransformVector(Vector3::UnitZ).Normalized();
 			}
