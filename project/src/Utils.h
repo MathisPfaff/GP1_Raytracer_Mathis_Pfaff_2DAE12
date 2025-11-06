@@ -140,8 +140,36 @@ namespace dae
 		}
 #pragma endregion
 #pragma region TriangeMesh HitTest
+		inline bool SlabTest_TriangleMesh(const TriangleMesh& mesh, const Ray& ray)
+		{
+			float t1 = (mesh.transformedMinAABB.x - ray.origin.x) / ray.direction.x;
+			float t2 = (mesh.transformedMaxAABB.x - ray.origin.x) / ray.direction.x;
+
+			float tmin = std::min(t1, t2);
+			float tmax = std::max(t1, t2);
+
+			t1 = (mesh.transformedMinAABB.y - ray.origin.y) / ray.direction.y;
+			t2 = (mesh.transformedMaxAABB.y - ray.origin.y) / ray.direction.y;
+
+			tmin = std::max(tmin, std::min(t1, t2));
+			tmax = std::min(tmax, std::max(t1, t2));
+
+			t1 = (mesh.transformedMinAABB.z - ray.origin.z) / ray.direction.z;
+			t2 = (mesh.transformedMaxAABB.z - ray.origin.z) / ray.direction.z;
+
+			tmin = std::max(tmin, std::min(t1, t2));
+			tmax = std::min(tmax, std::max(t1, t2));
+
+			return tmax > 0 && tmax >= tmin;
+		}
+
 		inline bool HitTest_TriangleMesh(const TriangleMesh& mesh, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
+			if (!SlabTest_TriangleMesh(mesh, ray))
+			{
+				return false;
+			}
+			
 			Triangle tempTriangle{};
 
 			if (ignoreHitRecord) // for light rays, invert culling

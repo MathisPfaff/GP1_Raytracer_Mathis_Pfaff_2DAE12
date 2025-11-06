@@ -29,8 +29,6 @@ void Renderer::Render(Scene* pScene) const
 {
 	Camera& camera = pScene->GetCamera();
 	const Matrix& cameraToWorld = camera.CalculateCameraToWorld();
-	auto& materials = pScene->GetMaterials();
-	auto& lights = pScene->GetLights();
 
 	const float aspectRatio = static_cast<float>(m_Width) / static_cast<float>(m_Height);
 
@@ -38,13 +36,13 @@ void Renderer::Render(Scene* pScene) const
 
 #if defined(PARALLEL_EXECUTION)
 	//Parallel logic
-	uint32_t amountOfPixels{ uint32_t(m_Width * m_Height) };
+	const uint32_t amountOfPixels{ uint32_t(m_Width * m_Height) };
 	std::vector<uint32_t> pixelIndices{};
 
 	pixelIndices.reserve(amountOfPixels);
 	for (uint32_t idx{}; idx < amountOfPixels; idx++) pixelIndices.emplace_back(idx);
 
-	std::for_each(std::execution::par, pixelIndices.begin(), pixelIndices.end(), [&](int i) {
+	std::for_each(std::execution::par, pixelIndices.begin(), pixelIndices.end(), [&](const uint32_t i) {
 		RenderPixel(pScene, i, fov, aspectRatio, cameraToWorld, camera.origin);
 		});
 #else
@@ -63,8 +61,8 @@ void Renderer::Render(Scene* pScene) const
 
 void Renderer::RenderPixel(const Scene* pScene, uint32_t pixelIndex, float fov, float aspectRatio, const Matrix& cameraToWorld, const Vector3& cameraOrigin) const
 {
-	auto& materials = pScene->GetMaterials();
-	auto& lights = pScene->GetLights();
+	const auto& materials = pScene->GetMaterials();
+	const auto& lights = pScene->GetLights();
 
 	const uint32_t px{ pixelIndex % m_Width }, py{ pixelIndex / m_Width };
 
@@ -86,7 +84,7 @@ void Renderer::RenderPixel(const Scene* pScene, uint32_t pixelIndex, float fov, 
 	{
 		for (const auto& light : lights)
 		{
-			Vector3 lightDirection{ LightUtils::GetDirectionToLight(light, closestHit.origin) };
+			Vector3 lightDirection{ LightUtils::GetDirectionToLight(light, closestHit.origin)};
 			Ray lightRay{};
 
 			lightRay.origin = closestHit.origin;
@@ -123,17 +121,17 @@ void Renderer::RenderPixel(const Scene* pScene, uint32_t pixelIndex, float fov, 
 				break;
 			}
 
-			//Update Color in Buffer
-			finalColor.MaxToOne();
-
-			m_pBufferPixels[px + (py * m_Width)] = SDL_MapRGB(m_pBuffer->format,
-				static_cast<uint8_t>(finalColor.r * 255),
-				static_cast<uint8_t>(finalColor.g * 255),
-				static_cast<uint8_t>(finalColor.b * 255));
+			
 		}
 	}
 
-	
+	//Update Color in Buffer
+	finalColor.MaxToOne();
+
+	m_pBufferPixels[px + (py * m_Width)] = SDL_MapRGB(m_pBuffer->format,
+		static_cast<uint8_t>(finalColor.r * 255),
+		static_cast<uint8_t>(finalColor.g * 255),
+		static_cast<uint8_t>(finalColor.b * 255));
 
 }
 
